@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "C:\Users\terry\AppData\Local\Temp\ipykernel_25024\3082211569.py", line 8, in <module>
+    res_3 = check_3(file_data)
+  File "C:\Users\terry\AppData\Local\Temp\ipykernel_25024\3646643239.py", line 11, in check_3
+    tree = ast.parse(code_content)
+  File "c:\users\terry\appdata\local\programs\python\python39\lib\ast.py", line 50, in parse
+    return compile(source, filename, mode, flags,
+  File "<unknown>", line 1
+    Fit an exponential curve to the given data points and plot the curves with labels.
+IndentationError: unexpected indent

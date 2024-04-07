@@ -1,0 +1,1 @@
+Function 'f_480' may have dummy code.

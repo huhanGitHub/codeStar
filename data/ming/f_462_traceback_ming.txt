@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "C:\Users\terry\AppData\Local\Temp\ipykernel_25024\3082211569.py", line 8, in <module>
+    res_3 = check_3(file_data)
+  File "C:\Users\terry\AppData\Local\Temp\ipykernel_25024\3646643239.py", line 11, in check_3
+    tree = ast.parse(code_content)
+  File "c:\users\terry\appdata\local\programs\python\python39\lib\ast.py", line 50, in parse
+    return compile(source, filename, mode, flags,
+  File "<unknown>", line 6
+    The function filters rows in a DataFrame where values of the 'Word' column start with a specified letter.
+        ^
+SyntaxError: invalid syntax
