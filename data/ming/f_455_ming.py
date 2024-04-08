@@ -1,11 +1,12 @@
+import shutil
 from datetime import datetime
 import os
 from random import randint
 import csv
 
 # Constants
-current_directory_path = os.path.dirname(os.path.abspath(__file__))
-FILE_PATH = os.path.join(current_directory_path, 'f_455_data_ming/sensor_data.csv')
+current_directory_path = os.path.join(os.getcwd(), os.path.splitext(os.path.basename(__file__))[0])
+FILE_PATH = os.path.join(current_directory_path, 'sensor_data.csv')
 SENSORS = ['Temperature', 'Humidity', 'Pressure']
 
 
@@ -65,6 +66,15 @@ import unittest
 import os
 
 class TestF455(unittest.TestCase):
+
+    def tearDown(self):
+        """Clean up any files created during the tests."""
+        # Check and remove the expected file if it exists
+        # if os.path.exists(FILE_PATH):
+        #     os.remove(FILE_PATH)
+        if os.path.exists(current_directory_path):
+            shutil.rmtree(current_directory_path)
+
     def test_csv_file_creation(self):
         """Test if the CSV file is successfully created."""
         f_455(1)

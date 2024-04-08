@@ -9,13 +9,13 @@ import os
 
 # Constants
 
-current_directory_path = os.getcwd()
+current_directory_path = os.path.join(os.getcwd(), os.path.splitext(os.path.basename(__file__))[0])
 FILE_PATH = os.path.join(current_directory_path, 'traffic_data.csv')
 VEHICLE_TYPES = ['Car', 'Bus', 'Truck', 'Bike']
 
 
-def ensure_directory():
-    if not current_directory_path:
+def ensure_directory(current_directory_path):
+    if not os.path.exists(current_directory_path):
         os.makedirs(current_directory_path)
 
 
@@ -48,14 +48,14 @@ def f_456(hours):
       via 'pip install matplotlib'.
 
     """
-    ensure_directory(FILE_PATH)
+    ensure_directory(current_directory_path)
 
     data = [['Time'] + VEHICLE_TYPES]
     for i in range(hours):
         row = [datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')] + [randint(0, 50) for _ in VEHICLE_TYPES]
         data.append(row)
 
-    with open(FILE_PATH, 'w', newline='') as f:
+    with open(FILE_PATH, 'w+', newline='') as f:
         writer = csv.writer(f)
         writer.writerows(data)
 
@@ -81,16 +81,17 @@ class TestF456Optimized(unittest.TestCase):
 
     def setUp(self):
         """Set up the environment for testing."""
-        if not current_directory_path:
+        if not os.path.exists(current_directory_path):
             os.makedirs(current_directory_path)
 
     @classmethod
     def tearDownClass(cls):
         """Clean up any files created during the tests."""
-        # Check if the backup directory exists and remove it
+        # Check and remove the expected file if it exists
+        # if os.path.exists(FILE_PATH):
+        #     os.remove(FILE_PATH)
         if os.path.exists(current_directory_path):
             shutil.rmtree(current_directory_path)
-
 
     @patch('matplotlib.pyplot.show')  # Mock plt.show to not render plots
     @patch('csv.writer')  # Mock csv.writer to not actually write files
@@ -119,6 +120,8 @@ class TestF456Optimized(unittest.TestCase):
     @patch('os.path.exists', return_value=False)
     def test_directory_creation(self, mock_path_exists, mock_makedirs):
         """Ensure directory is created if it does not exist."""
+        if os.path.exists(current_directory_path):
+            shutil.rmtree(current_directory_path)
         f_456(1)
         mock_makedirs.assert_called_with(os.path.dirname(FILE_PATH))
 

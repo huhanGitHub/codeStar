@@ -110,9 +110,13 @@ def run_all_cases():
 
             print('there are %d test cases' % len(python_files))
             prefix = 'path:'
+            script_directory = os.path.dirname(os.path.abspath(__file__))
             for file in tqdm(python_files):
                 try:
-                    result = subprocess.run(["python", file], capture_output=True, text=True, timeout=30)
+                    result = subprocess.run(
+                        ["python", file], capture_output=True, text=True, timeout=30,
+                        cwd=script_directory  # Set the working directory to the current script's directory
+                    )
                     # Output and error messages
                     error_message = result.stderr
                     if "FAILED" in error_message:
@@ -147,10 +151,14 @@ def run_failed_cases(fail_case_log):
 
     print('there are %d test cases' % len(execute_files))
     new_fail_case_log = fail_case_log[:-4] + '_' + '.txt'
+    script_directory = os.path.dirname(os.path.abspath(__file__))
     with open(new_fail_case_log, "w") as fp:
         for file in tqdm(execute_files):
             try:
-                result = subprocess.run(["python", file], capture_output=True, text=True, timeout=10)
+                result = subprocess.run(
+                    ["python", file], capture_output=True, text=True, timeout=30,
+                    cwd=script_directory  # Set the working directory to the current script's directory
+                )
                 # Output and error messages
                 error_message = result.stderr
                 prefix = 'path:'
@@ -183,7 +191,7 @@ def removeBefore():
 
 def unit_script_test():
     # Assuming this function is in the script that you're running
-    script_to_run = r'/Users/hhuu0025/PycharmProjects/codeStar/data/ming/f_456_ming.py'
+    script_to_run = r'/Users/hhuu0025/PycharmProjects/codeStar/data/ming/f_473_ming.py'
 
     # Get the directory of the current script (the one containing this function)
     script_directory = os.path.dirname(os.path.abspath(__file__))

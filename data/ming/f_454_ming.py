@@ -2,10 +2,15 @@ import pandas as pd
 from datetime import datetime
 from random import randint
 import matplotlib.pyplot as plt
+import os
 
 TEMP_CATEGORIES = ['Cold', 'Normal', 'Hot']
+current_directory_path = os.getcwd()
+# print(current_directory_path)
+FILE_PATH = os.path.join(current_directory_path, 'custom_data.csv')
 
-def f_454(hours, file_path='temp_data.csv'):
+
+def f_454(hours, file_path=FILE_PATH):
     """
     Generate temperature data for the specified number of hours, save it in a CSV file, 
     and plot the data using matplotlib.
@@ -57,6 +62,7 @@ import unittest
 import pandas as pd
 import os
 
+
 def run_tests():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestCases))
@@ -64,10 +70,17 @@ def run_tests():
     runner.run(suite)
 
 class TestCases(unittest.TestCase):
+
+    def tearDown(self):
+        """Clean up any files created during the tests."""
+        # Check and remove the expected file if it exists
+        if os.path.exists(FILE_PATH):
+            os.remove(FILE_PATH)
+
     def test_case_1(self):
         # Testing with 1 hour
         file_path, ax = f_454(1)
-        self.assertEqual(file_path, 'temp_data.csv')
+        self.assertEqual(file_path, FILE_PATH)
         self.assertTrue(os.path.exists(file_path))
         df = pd.read_csv(file_path)
         self.assertEqual(len(df), 1)
@@ -75,7 +88,7 @@ class TestCases(unittest.TestCase):
     def test_case_2(self):
         # Testing with 24 hours
         file_path, ax = f_454(24)
-        self.assertEqual(file_path, 'temp_data.csv')
+        self.assertEqual(file_path, FILE_PATH)
         self.assertTrue(os.path.exists(file_path))
         df = pd.read_csv(file_path)
         self.assertEqual(len(df), 24)
@@ -83,26 +96,27 @@ class TestCases(unittest.TestCase):
     def test_case_3(self):
         # Testing with 120 hours
         file_path, ax = f_454(120)
-        self.assertEqual(file_path, 'temp_data.csv')
+        self.assertEqual(file_path, FILE_PATH)
         self.assertTrue(os.path.exists(file_path))
         df = pd.read_csv(file_path)
         self.assertEqual(len(df), 120)
 
     def test_case_4(self):
         # Testing with a custom file path
-        custom_path = 'custom_data.csv'
-        file_path, ax = f_454(24, custom_path)
-        self.assertEqual(file_path, custom_path)
-        self.assertTrue(os.path.exists(file_path))
+        file_path, ax = f_454(24, FILE_PATH)
+        self.assertEqual(file_path, FILE_PATH)
+        self.assertTrue(os.path.exists(FILE_PATH))
         df = pd.read_csv(file_path)
         self.assertEqual(len(df), 24)
 
     def test_case_5(self):
         # Testing the categories in the generated CSV file
-        file_path, ax = f_454(24)
+        file_path, ax = f_454(24, FILE_PATH)
         df = pd.read_csv(file_path)
         categories = df['Category'].unique().tolist()
         for cat in categories:
             self.assertIn(cat, ['Cold', 'Normal', 'Hot'])
+
+
 if __name__ == "__main__":
     run_tests()

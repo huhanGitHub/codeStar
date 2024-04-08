@@ -1,5 +1,11 @@
 import hashlib
 import base64
+import os
+import shutil
+
+current_directory_path = os.path.join(os.getcwd(), os.path.splitext(os.path.basename(__file__))[0])
+if not os.path.exists(current_directory_path):
+    os.makedirs(current_directory_path)
 
 def f_505(filename, data, password):
     """
@@ -50,44 +56,58 @@ def run_tests():
     runner = unittest.TextTestRunner()
     runner.run(suite)
 
+
 class TestCases(unittest.TestCase):
-    
+
+    @classmethod
+    def tearDownClass(cls):
+        """Clean up any files created during the tests."""
+        # Check and remove the expected file if it exists
+        # if os.path.exists(FILE_PATH):
+        #     os.remove(FILE_PATH)
+        if os.path.exists(current_directory_path):
+            shutil.rmtree(current_directory_path)
+
     def test_case_1(self):
         # Testing basic encryption and file write
-        encrypted = f_505('test1.txt', 'Hello, World!', 'password123')
-        with open('test1.txt', 'r') as f:
+        file1 = os.path.join(current_directory_path, 'test1.txt')
+        encrypted = f_505(file1, 'Hello, World!', 'password123')
+        with open(file1, 'r') as f:
             file_content = f.read()
         self.assertEqual(encrypted, file_content)
         
     def test_case_2(self):
         # Testing with different data and password
-        encrypted = f_505('test2.txt', 'OpenAI', 'secret')
-        with open('test2.txt', 'r') as f:
+        file2 = os.path.join(current_directory_path, 'test2.txt')
+        encrypted = f_505(file2, 'OpenAI', 'secret')
+        with open(file2, 'r') as f:
             file_content = f.read()
         self.assertEqual(encrypted, file_content)
         
     def test_case_3(self):
         # Testing with special characters in data and password
+        file3 = os.path.join(current_directory_path, 'test3.txt')
         data = '!@#$%^&*()_+'
         password = 'special_chars'
-        encrypted = f_505('test3.txt', data, password)
-        with open('test3.txt', 'r') as f:
+        encrypted = f_505(file3, data, password)
+        with open(file3, 'r') as f:
             file_content = f.read()
         self.assertEqual(encrypted, file_content)
         
     def test_case_4(self):
         # Testing file creation if it doesn't exist
-        filename = 'nonexistent_file.txt'
-        if os.path.exists(filename):
-            os.remove(filename)
-        encrypted = f_505(filename, 'Test Data', 'pwd')
-        self.assertTrue(os.path.exists(filename))
+        file4 = os.path.join(current_directory_path, 'nonexistent_file.txt')
+        if os.path.exists(file4):
+            os.remove(file4)
+        encrypted = f_505(file4, 'Test Data', 'pwd')
+        self.assertTrue(os.path.exists(file4))
         
     def test_case_5(self):
         # Testing decryption to ensure encryption is reversible
+        file5 = os.path.join(current_directory_path, 'test5.txt')
         data = 'Decryption Test'
         password = 'decrypt_pwd'
-        encrypted = f_505('test5.txt', data, password)
+        encrypted = f_505(file5, data, password)
         
         # Decryption logic (reverse of encryption)
         key = hashlib.sha256(password.encode()).digest()
@@ -95,6 +115,7 @@ class TestCases(unittest.TestCase):
         decrypted = bytes(decrypted_bytes).decode()
         
         self.assertEqual(data, decrypted)
+
 
 if __name__ == "__main__":
     run_tests()
